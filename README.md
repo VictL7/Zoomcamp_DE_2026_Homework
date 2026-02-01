@@ -30,14 +30,14 @@ This repository contains my homework for the **Data Engineering Zoomcamp 2026** 
 │   ├── outputs.tf
 │   └── README.md
 │
-├── 2_Kestra_work_orchestration/ # Kestra workflows (Week 2)
-│ ├── 01_gcp_kv_taxi.yaml # Store GCP config in KV
-│ ├── 02_gcp_setup_taxi.yaml # Create GCS bucket & BigQuery dataset
-│ ├── 03_gcp_taxi_ingest.yaml # Parameterized ingestion of taxi CSVs
+├── 2_Kestra_work_orchestration/        # Kestra workflows (Week 2)
+│ ├── 01_gcp_kv_taxi.yaml               # Store GCP config in KV
+│ ├── 02_gcp_setup_taxi.yaml            # Create GCS bucket & BigQuery dataset
+│ ├── 03_gcp_taxi_ingest.yaml           # Parameterized ingestion of taxi CSVs
 │ ├── 04_gcp_taxi_scheduled_backfill.yaml # Backfill & scheduled workflows
-│ ├── 05_chat_with_rag.yaml # RAG workflow using Zoomcamp docs
-│ ├── Docker_Compose.yaml # Local Kestra + Postgres + pgAdmin setup
-│ └── README.md # Detailed instructions for Kestra flows
+│ ├── 05_chat_with_rag.yaml             # RAG workflow using Zoomcamp docs
+│ ├── Docker_Compose.yaml               # Local Kestra + Postgres + pgAdmin setup
+│ └── README.md                         # Detailed instructions for Kestra flows
 │
 └── README.md                           # This file
 ```
