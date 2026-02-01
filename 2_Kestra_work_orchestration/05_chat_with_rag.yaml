@@ -1,0 +1,52 @@
+id: 05_chat_with_rag
+namespace: zoomcamp
+
+description: |
+  This workflow demonstrates a simple RAG pipeline using Kestra.
+  It ingests the official Data Engineering Zoomcamp README and uses embeddings to answer a career-related question.
+  The response is grounded in the provided documentation and avoids hallucinations by relying only on retrieved context.
+
+tasks:
+  - id: ingest_zoomcamp_docs
+    type: io.kestra.plugin.ai.rag.IngestDocument
+    description: Ingest Zoomcamp README for RAG
+    provider:
+      type: io.kestra.plugin.ai.provider.GoogleGemini
+      modelName: gemini-embedding-001
+      apiKey: "{{ kv('GEMINI_API_KEY') }}"
+    embeddings:
+      type: io.kestra.plugin.ai.embeddings.KestraKVStore
+    drop: true
+    fromExternalURLs:
+      - https://raw.githubusercontent.com/DataTalksClub/data-engineering-zoomcamp/main/README.md
+
+  - id: chat_with_rag
+    type: io.kestra.plugin.ai.rag.ChatCompletion
+    description: Answer a question using Zoomcamp documentation
+    chatProvider:
+      type: io.kestra.plugin.ai.provider.GoogleGemini
+      modelName: gemini-2.5-flash
+      apiKey: "{{ kv('GEMINI_API_KEY') }}"
+    embeddingProvider:
+      type: io.kestra.plugin.ai.provider.GoogleGemini
+      modelName: gemini-embedding-001
+      apiKey: "{{ kv('GEMINI_API_KEY') }}"
+    embeddings:
+      type: io.kestra.plugin.ai.embeddings.KestraKVStore
+    systemMessage: |
+      You are a helpful assistant that answers questions about
+      data engineering careers using the Zoomcamp documentation.
+      Use only the provided context.
+      If the answer is not found, say so clearly.
+    prompt: |
+      What skills and knowledge can I learn from the Data Engineering Zoomcamp?
+      How can these skills be applied when looking for a data engineering job and in real-world data engineering work?
+      
+      List the main points based on the Zoomcamp documentation.
+
+
+  - id: log_answer
+    type: io.kestra.plugin.core.log.Log
+    message: |
+      📘 RAG Answer:
+      {{ outputs.chat_with_rag.textOutput }}
