@@ -1,77 +1,117 @@
-# 📘 Zoomcamp_DE_2026_Homework
+# 📦 Data Engineering Zoomcamp – Week 2 Homework (Kestra)
 
-This repository contains my homework for the **Data Engineering Zoomcamp 2026** by DataTalksClub.  
+This repository contains my homework for **Data Engineering Zoomcamp – Week 2 (Workflow Orchestration)**.
 
+The project demonstrates how to use **Kestra** to orchestrate data ingestion pipelines and a simple RAG (Retrieval-Augmented Generation) workflow.
 
-- **1.1 Docker Data Ingestion** – building a containerized data pipeline  
-- **1.2 Terraform & GCP** – provisioning cloud infrastructure for data storage and processing  
+### The workflows cover:
+* **GCP setup** (GCS + BigQuery)
+* **Parameterized** taxi data ingestion
+* **Backfill and scheduling**
+* **Minimal RAG example** using course documentation
 
 ---
 
-# 📂 Project Structure
+## 🧱 Project Structure
+All workflows are written in Kestra YAML and organized by purpose.
 
-```
+```text
 .
-├── 1.1_Docker_Data_ingestion_SQL/      # Docker + Data Ingestion pipeline
-│   ├── ingestion/
-│   │   ├── Data_ingest.py
-│   │   ├── Data_ingest.ipynb
-│   │   ├── Dockerfile
-│   │   ├── docker-compose.yaml
-│   │   ├── pyproject.toml
-│   │   └── DOCKER_README.md
-│   └── README.md
-│
-├── 1.2_Terraform_GCP/                  # Terraform + GCP environment
-│   ├── main.tf
-│   ├── variables.tf
-│   ├── outputs.tf
-│   └── README.md
-│
-└── README.md                           # This file
+├── Docker_Compose.yaml
+├── 01_gcp_kv_taxi.yaml
+├── 02_gcp_setup_taxi.yaml
+├── 03_gcp_taxi_ingest.yaml
+├── 04_gcp_taxi_scheduled_backfill.yaml
+└── 05_chat_with_rag.yaml
+
 ```
+## 🐳 Docker Setup
+
+### `Docker_Compose.yaml`
+This file sets up the local development environment using Docker Compose. It includes:
+
+* **PostgreSQL** for taxi data
+* **PostgreSQL** for Kestra metadata
+* **Kestra server** (standalone mode)
+* **pgAdmin** for database inspection
+
+> This setup allows running Kestra locally and executing all workflows without external orchestration tools.
 
 ---
 
-# 🚀 1.1 Docker Data Ingestion
+## 🔐 Workflow Descriptions
 
-This module implements an end-to-end pipeline for **NYC Green Taxi data**:
+### 1️⃣ `01_gcp_kv_taxi.yaml` – GCP Configuration via KV Store
+This workflow initializes global configuration values using Kestra’s KV store. It stores:
+* GCP Project ID
+* GCP Location
+* GCS Bucket name
+* BigQuery Dataset name
+* (Separately) GCP service account credentials
 
-- Downloads NYC Green Taxi trip data (Parquet) and Taxi Zone Lookup (CSV)
-- Processes data using **Python (pandas / pyarrow)**
-- Ingests data into **PostgreSQL** running inside Docker
-- Provides SQL access through **pgAdmin**
-- Fully containerized using **Docker & Docker Compose**
-
-### 🔑 Key Learnings
-
-- Container networking and orchestration with Docker Compose  
-- Debugging PostgreSQL connection issues  
-- Organizing project files and Docker volumes for persistent data  
-- Hands-on experience writing SQL queries for analytics  
+**Purpose:** Centralize configuration and secrets so they are not hard-coded in ingestion workflows.
 
 ---
 
-# ☁️ 1.2 Terraform & GCP
+### 2️⃣ `02_gcp_setup_taxi.yaml` – GCP Resource Setup
+This workflow creates required GCP resources:
+* Google Cloud Storage bucket
+* BigQuery dataset
 
-This module sets up cloud infrastructure for data pipelines using **Terraform**:
+**Key Feature:** The workflow is **idempotent** (if resources already exist, they are skipped).
 
-- Provisions resources on **Google Cloud Platform (GCP)**
-- Creates a **GCS bucket** for raw data storage
-- Creates a **BigQuery dataset** for analytical queries
-- Demonstrates **Infrastructure as Code (IaC)** principles
-
-### 🔑 Key Learnings
-
-- Defining cloud resources using Terraform configuration files  
-- Deploying, modifying, and destroying infrastructure programmatically  
-- Understanding **BigQuery** as a managed data warehouse  
-- Integrating local, VM, and cloud environments for reproducible pipelines  
+**Purpose:** Ensure infrastructure is ready before running any ingestion jobs.
 
 ---
 
-# 📌 Notes
+### 3️⃣ `03_gcp_taxi_ingest.yaml` – Parameterized Taxi Data Ingestion
+This workflow ingests NYC Taxi CSV data into GCP. Key features:
+* **Parameterized inputs** (taxi type, year, month)
+* Downloads data from the public Zoomcamp dataset
+* Uploads raw files to GCS
+* Loads data into BigQuery tables
 
-This repository is part of my learning journey through the Data Engineering Zoomcamp.  
-Each module includes its own README with detailed instructions, code, and explanations.
+**Purpose:** Demonstrate a reusable ingestion pipeline that can handle different taxi types and dates.
 
+---
+
+### 4️⃣ `04_gcp_taxi_scheduled_backfill.yaml` – Backfill & Scheduling
+This workflow extends the ingestion logic with:
+* **Scheduled execution** (monthly)
+* **Manual backfill support** for historical data
+* Explicit input-driven execution (no dependency on trigger dates)
+
+**Purpose:** Show how Kestra can be used both for historical data backfill and ongoing production-style scheduling.
+
+---
+
+### 5️⃣ `05_chat_with_rag.yaml` – Simple RAG Workflow
+This workflow demonstrates a homework-level RAG (Retrieval-Augmented Generation) pipeline using Kestra. Steps:
+* Ingest the official Data Engineering Zoomcamp README
+* Generate embeddings using an LLM provider
+* Answer a career-related question using retrieved context
+
+**Note:** The workflow is intentionally minimal and avoids hallucination by using only provided documentation and explicitly instructing the model to rely on retrieved context.
+
+**Purpose:** Illustrate how Kestra can orchestrate AI-related workflows in addition to data pipelines.
+
+---
+
+## 🎯 Key Learning Outcomes
+Through this homework, I practiced:
+* **Workflow orchestration** with Kestra
+* **Parameterized** and reusable pipelines
+* **Backfill vs scheduled** execution
+* **Secure handling** of configuration and secrets
+* Basic **RAG concepts** integrated into a workflow system
+
+---
+
+## 📝 Notes
+* **Security:** Secrets (API keys, service account credentials) are stored in Kestra KV and are **not** committed to the repository.
+* **Clarity:** All workflows are designed for educational purposes rather than production hardening.
+
+---
+
+## ✅ Status
+All workflows have been tested locally using Docker Compose and executed successfully in Kestra.
