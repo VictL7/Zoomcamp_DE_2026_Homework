@@ -5,7 +5,8 @@ This repository contains my homework for the **Data Engineering Zoomcamp 2026** 
 
 - **1.1 Docker Data Ingestion** – building a containerized data pipeline  
 - **1.2 Terraform & GCP** – provisioning cloud infrastructure for data storage and processing
-- **2.1 Kestra Workflow Orchestration** – parameterized ingestion pipelines, backfill, scheduling, and a simple RAG workflow  
+- **2. Kestra Workflow Orchestration** – parameterized ingestion pipelines, backfill, scheduling, and a simple RAG workflow  
+- **3. BigQuery Data Warehousing** - mastering columnar storage, Partitioning, Clustering, and cost-effective data strategies.
 
 
 ---
@@ -38,6 +39,12 @@ This repository contains my homework for the **Data Engineering Zoomcamp 2026** 
 │ ├── 05_chat_with_rag.yaml             # RAG workflow using Zoomcamp docs
 │ ├── Docker_Compose.yaml               # Local Kestra + Postgres + pgAdmin setup
 │ └── README.md                         # Detailed instructions for Kestra flows
+│
+├── 3_data_warehouse_Bigquery/          # BigQuery Warehouse (Week 3)
+│   ├── Bigquery_hw3.sql                # SQL queries for optimization & analysis
+│   ├── load_yellow_taxi_data.py        # Python script to load Parquet to GCS
+│   ├── requirements.txt                # Python dependencies
+│   └── README.md                       # Week 3 specific documentation
 │
 └── README.md                           # This file
 ```
@@ -101,6 +108,38 @@ This module demonstrates **workflow orchestration using Kestra**, including:
 - Introduction to **RAG workflows** in a data engineering context
 
 ---
+## 📊 3.1 BigQuery Data Warehousing
+
+This module focuses on building a high-performance **Data Warehouse** using **Google BigQuery** with **2024 NYC Yellow Taxi** data.
+
+- Storage Architectures: Comparison between **External Tables** (GCS-backed) and **Native Tables** (BigQuery-backed)
+- **Columnar Storage**: Understanding how BigQuery optimizes scan volume by reading only the required columns
+- Query Optimization: Implementing **Partitioning** and **Clustering** to minimize costs and maximize query performance
+
+
+## 🔑 Key Learnings
+
+### Columnar Storage Efficiency
+- Leveraged BigQuery’s ability to prune columns  
+- Avoided `SELECT *` to significantly reduce query costs
+
+### Partitioning Strategy
+- Partitioned tables by `tpep_dropoff_datetime` (Day)  
+- Enabled BigQuery to skip scanning irrelevant date ranges
+
+### Clustering Strategy
+- Clustered data by `VendorID` within partitions  
+- Improved performance for sorting and filtering operations
+
+### Best Practices
+- Avoid clustering on small tables (< 1GB), where the overhead outweighs performance benefits  
+- Native tables provide significantly better performance than external tables due to optimized metadata handling
+- Table Size Threshold: Learned that clustering is generally recommended only for **tables > 1 GB** to ensure the performance gain outweighs the metadata management overhead
+- **Metadata Optimization**: Observed that Native Tables leverage built-in metadata (like row counts) much faster than External Tables
+
+
+---
+
 # 📌 Notes
 
 This repository is part of my learning journey through the Data Engineering Zoomcamp.  
