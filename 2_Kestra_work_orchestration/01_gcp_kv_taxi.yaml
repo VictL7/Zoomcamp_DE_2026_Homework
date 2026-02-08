@@ -1,0 +1,31 @@
+id: 01_gcp_kv_taxi
+namespace: zoomcamp
+description: 
+  homework for zoomcamp
+  #need to create GCP_Credentials KV entry with your GCP service account JSON before running this workflow.
+
+
+tasks:
+  - id: gcp_project_id
+    type: io.kestra.plugin.core.kv.Set
+    key: GCP_PROJECT_ID
+    kvType: STRING
+    value: zeta-medley-473321-r6
+
+  - id: gcp_location
+    type: io.kestra.plugin.core.kv.Set
+    key: GCP_LOCATION
+    kvType: STRING
+    value: europe-west2
+
+  - id: gcp_bucket_name
+    type: io.kestra.plugin.core.kv.Set
+    key: GCP_BUCKET_NAME
+    kvType: STRING
+    value: 2026-zoomcamp-homework-02-workflow
+
+  - id: gcp_dataset
+    type: io.kestra.plugin.core.kv.Set
+    key: GCP_DATASET
+    kvType: STRING
+    value: zoomcamp

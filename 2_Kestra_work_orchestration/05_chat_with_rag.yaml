@@ -5,6 +5,7 @@ description: |
   This workflow demonstrates a simple RAG pipeline using Kestra.
   It ingests the official Data Engineering Zoomcamp README and uses embeddings to answer a career-related question.
   The response is grounded in the provided documentation and avoids hallucinations by relying only on retrieved context.
+  need create a KV entry `GEMINI_API_KEY` with your Google Gemini API key before running this workflow.
 
 tasks:
   - id: ingest_zoomcamp_docs
