@@ -1,0 +1,15 @@
+digraph trips_lineage {
+  rankdir=LR;
+  node [shape=box, style=rounded, color="#2b7cff", fontname="Helvetica"];
+
+  "ingestion.trips" -> "ingestion.payment_lookup" [label="depends (to serialize)", fontsize=10];
+  "ingestion.trips" -> "staging.trips";
+  "ingestion.payment_lookup" -> "staging.trips";
+  "staging.trips" -> "reports.trips_report";
+
+  /* cosmetic */
+  "ingestion.trips" [color="#1f78b4"];
+  "ingestion.payment_lookup" [color="#33a02c"];
+  "staging.trips" [color="#ff7f00"];
+  "reports.trips_report" [color="#6a3d9a"];
+}
