@@ -1,0 +1,9 @@
+[project]
+name = "taxi-pipeline"
+version = "0.1.0"
+description = "NYC Taxi data pipeline using dlt"
+requires-python = ">=3.11"
+dependencies = [
+  "dlt[duckdb]>=1.17.1",
+  "requests>=2.31.0",
+]
