@@ -7,6 +7,10 @@ This repository contains my homework for the **Data Engineering Zoomcamp 2026** 
 - **1.2 Terraform & GCP** – provisioning cloud infrastructure for data storage and processing
 - **2. Kestra Workflow Orchestration** – parameterized ingestion pipelines, backfill, scheduling, and a simple RAG workflow  
 - **3. BigQuery Data Warehousing** - mastering columnar storage, Partitioning, Clustering, and cost-effective data strategies.
+- **4. Analytics Engineering (dbt + BigQuery)** – medallion modeling, tests, and revenue-ready marts
+- **5. Data Platforms (Bruin)** – ingestion → staging → reporting with lineage and validation
+- **6. Batch Processing (PySpark SQL)** – Spark DataFrame/SQL analysis over NYC Yellow Taxi data
+- **Workshop: dlt APIs to Warehouses** – paginated API ingestion with dlt into DuckDB
 
 
 ---
@@ -45,6 +49,26 @@ This repository contains my homework for the **Data Engineering Zoomcamp 2026** 
 │   ├── load_yellow_taxi_data.py        # Python script to load Parquet to GCS
 │   ├── requirements.txt                # Python dependencies
 │   └── README.md                       # Week 3 specific documentation
+│
+├── 4_Analytics_Engineering_dbt/        # dbt models and analytics engineering (Week 4)
+│   ├── dbt_cloud_nytaxi/               # Main NYC taxi dbt project README + models/macros
+│   ├── nytaxi/                         # Local dbt scaffold/project files
+│   └── load_taxi_data_GCP.py
+│
+├── 5_data_platforms/
+│   └── my-taxi-pipeline/               # Bruin pipeline (ingestion/staging/reports)
+│       ├── pipeline/pipeline.yml
+│       └── README.md
+│
+├── 6_Batch/                            # PySpark SQL batching practice
+│   ├── pyspark_SQL.ipynb
+│   └── README.md
+│
+├── workshop_dlt_APIs_to_Warehouses/    # dlt + uv + MCP workshop
+│   ├── SETUP_GUIDE.md
+│   └── taxi_pipeline/
+│       ├── taxi_pipeline.py
+│       └── README.md
 │
 └── README.md                           # This file
 ```
@@ -87,7 +111,7 @@ This module sets up cloud infrastructure for data pipelines using **Terraform**:
 - Integrating local, VM, and cloud environments for reproducible pipelines  
 
 ---
-# ⚡ 2.1 Kestra Workflow Orchestration
+# ⚡ 2. Kestra Workflow Orchestration
 
 This module demonstrates **workflow orchestration using Kestra**, including:
 
@@ -108,7 +132,7 @@ This module demonstrates **workflow orchestration using Kestra**, including:
 - Introduction to **RAG workflows** in a data engineering context
 
 ---
-## 📊 3.1 BigQuery Data Warehousing
+## 📊 3. BigQuery Data Warehousing
 
 This module focuses on building a high-performance **Data Warehouse** using **Google BigQuery** with **2024 NYC Yellow Taxi** data.
 
@@ -136,6 +160,73 @@ This module focuses on building a high-performance **Data Warehouse** using **Go
 - Native tables provide significantly better performance than external tables due to optimized metadata handling
 - Table Size Threshold: Learned that clustering is generally recommended only for **tables > 1 GB** to ensure the performance gain outweighs the metadata management overhead
 - **Metadata Optimization**: Observed that Native Tables leverage built-in metadata (like row counts) much faster than External Tables
+
+---
+
+## 🧱 4. Analytics Engineering with dbt (BigQuery)
+
+This module focuses on transforming raw NYC taxi datasets into analytics-ready models using **dbt** and **BigQuery**.
+
+- Main project docs are in [4_Analytics_Engineering_dbt/dbt_cloud_nytaxi/README.md](4_Analytics_Engineering_dbt/dbt_cloud_nytaxi/README.md)
+- Architecture follows **Staging → Core → Marts**
+- Includes schema harmonization and conflict handling (for example, dropping unstable `ehail_fee` to avoid type conflicts)
+- Applies dbt tests for:
+	- uniqueness (`tripid`)
+	- accepted values (`payment_type`)
+	- non-null critical keys/timestamps
+
+### 🔑 Key Learnings
+- Building maintainable dbt models with modular layers
+- Handling external table schema inconsistencies safely
+- Enforcing data quality with reusable generic tests
+
+---
+
+## 🏗️ 5. Data Platforms (Bruin)
+
+This module implements a compact ELT workflow using **Bruin** in [5_data_platforms/my-taxi-pipeline](5_data_platforms/my-taxi-pipeline).
+
+- Ingestion assets pull/normalize Yellow & Green trip data
+- Staging SQL performs cleaning and deduplication
+- Report assets generate daily trip aggregates
+- Includes pipeline definition and lineage artifacts
+
+### 🔑 Key Learnings
+- End-to-end asset-based pipeline design
+- Fast validation, targeted reruns, and lineage-driven debugging
+- Correct aggregation at each layer (staging `COUNT(*)` vs report `SUM(trip_count)`)
+
+---
+
+## ⚙️ 6. Batch Processing with PySpark SQL
+
+The batch module is maintained in [6_Batch](6_Batch) (course week label: 6_Batching).
+
+- Notebook-based Spark workflow in [6_Batch/pyspark_SQL.ipynb](6_Batch/pyspark_SQL.ipynb)
+- Reads NYC Yellow Taxi Parquet data and runs Spark SQL analysis
+- Joins with zone lookup data and builds reporting queries
+- Uses local partitioned parquet output for practice
+
+### 🔑 Key Learnings
+- Creating and managing `SparkSession`
+- Schema inspection and SQL over temp views
+- Joining fact and lookup datasets with Spark DataFrames
+
+---
+
+## 🧪 Workshop: dlt APIs to Warehouses
+
+Workshop materials are in [workshop_dlt_APIs_to_Warehouses](workshop_dlt_APIs_to_Warehouses), with executable pipeline code in [workshop_dlt_APIs_to_Warehouses/taxi_pipeline](workshop_dlt_APIs_to_Warehouses/taxi_pipeline).
+
+- Uses **dlt** with a custom paginated resource (`page=1,2,...`) against the Zoomcamp API
+- Loads data into **DuckDB** dataset `nyc_taxi_data`
+- Managed with **uv** dependencies
+- Setup and integration details documented in [workshop_dlt_APIs_to_Warehouses/SETUP_GUIDE.md](workshop_dlt_APIs_to_Warehouses/SETUP_GUIDE.md)
+
+### 🔑 Key Learnings
+- Building robust API pagination loops
+- Running reproducible local loads with dlt + DuckDB
+- Using MCP tooling patterns for documentation and pipeline introspection
 
 
 ---
