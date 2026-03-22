@@ -10,6 +10,7 @@ This repository contains my homework for the **Data Engineering Zoomcamp 2026** 
 - **4. Analytics Engineering (dbt + BigQuery)** – medallion modeling, tests, and revenue-ready marts
 - **5. Data Platforms (Bruin)** – ingestion → staging → reporting with lineage and validation
 - **6. Batch Processing (PySpark SQL)** – Spark DataFrame/SQL analysis over NYC Yellow Taxi data
+- **7. Stream Processing (Flink)** – Real-time data pipelines with Flink, Redpanda, and window aggregations
 - **Workshop: dlt APIs to Warehouses** – paginated API ingestion with dlt into DuckDB
 
 
@@ -62,6 +63,20 @@ This repository contains my homework for the **Data Engineering Zoomcamp 2026** 
 │
 ├── 6_Batch/                            # PySpark SQL batching practice
 │   ├── pyspark_SQL.ipynb
+│   └── README.md
+│
+├── 7_Streaming/                        # Flink stream processing (Week 7)
+│   ├── src/
+│   │   ├── models.py
+│   │   ├── producers/producer.py       # Kafka producer for taxi events
+│   │   ├── consumers/                  # Consumer implementations
+│   │   └── job/                        # Flink jobs
+│   │       ├── q6.py                   # 1-hour tumbling window for hourly tips
+│   │       ├── pass_through_job.py     # 5-minute tumbling window by location
+│   │       └── session_window.py       # 5-minute session window by location
+│   ├── docker-compose.yml
+│   ├── Dockerfile.flink
+│   ├── pyproject.toml
 │   └── README.md
 │
 ├── workshop_dlt_APIs_to_Warehouses/    # dlt + uv + MCP workshop
@@ -211,6 +226,25 @@ The batch module is maintained in [6_Batch](6_Batch) (course week label: 6_Batch
 - Creating and managing `SparkSession`
 - Schema inspection and SQL over temp views
 - Joining fact and lookup datasets with Spark DataFrames
+
+---
+
+## 🚦 7. Stream Processing with Flink
+
+Stream processing module is maintained in [7_Streaming](7_Streaming).
+
+- Uses **Apache Flink** for stream processing and window aggregations
+- **Redpanda** (Kafka API) as the message broker
+- **PostgreSQL** for sink storage
+- Processes NYC Green Taxi trip events with tumbling and session windows
+- Includes Q6 task: 1-hour tumbling window to compute hourly tip totals
+
+### 🔑 Key Learnings
+- Building real-time data pipelines with Flink
+- Window functions: tumbling, sliding, and session windows
+- Kafka/Redpanda topic management and stream consumption
+- Docker Compose orchestration for multi-service streaming applications
+- Aggregation patterns for streaming analytics
 
 ---
 
