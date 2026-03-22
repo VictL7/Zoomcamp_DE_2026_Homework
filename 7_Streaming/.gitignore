@@ -1,0 +1,17 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+
+# Notebook artifacts
+.ipynb_checkpoints/
+
+# Local data files
+*.parquet
+
+# Editor/OS files
+.vscode/
+.DS_Store
